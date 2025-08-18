@@ -1,1 +1,17 @@
-pywin32>=305
+# Core Dependencies
+pywin32>=305  # Für COM-Automation mit Enterprise Architect (nur Windows)
+python-dotenv>=1.0.0  # Für Umgebungsvariablen aus .env
+
+# Testing
+pytest>=7.4.0
+pytest-html>=4.0.0
+pytest-cov>=4.1.0
+pytest-mock>=3.11.0
+
+# Logging & Reports
+colorlog>=6.7.0  # Farbige Log-Ausgaben
+
+# Development (optional)
+black>=23.0.0  # Code-Formatierung
+flake8>=6.0.0  # Linting
+mypy>=1.5.0  # Type-Checking

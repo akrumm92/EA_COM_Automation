@@ -29,6 +29,11 @@ ENV/
 env/
 .venv/
 
+# Environment Variables
+.env
+.env.local
+.env.*.local
+
 # IDE
 .vscode/
 .idea/
@@ -40,11 +45,21 @@ env/
 logs/
 *.log
 
+# Test Reports
+test_reports/
+htmlcov/
+.coverage
+.pytest_cache/
+.tox/
+
 # Enterprise Architect
 *.ldb
 *.eap.bak
 *.eapx.bak
 *.qea.bak
+*.eapx.lck
+*.eap.lck
+backup/
 
 # OS
 .DS_Store
