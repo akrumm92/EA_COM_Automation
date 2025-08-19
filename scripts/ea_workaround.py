@@ -24,7 +24,7 @@ def fix_ea_internal_error():
         print("\n1. Starte EA Application...")
         # EA.App funktioniert laut deinem Log!
         ea_app = win32com.client.Dispatch("EA.App")
-        print("   ✓ EA.App erstellt")
+        print("   [OK] EA.App erstellt")
         
         # Warte kurz damit EA sich initialisiert
         print("   Warte 2 Sekunden für EA-Initialisierung...")
@@ -34,12 +34,12 @@ def fix_ea_internal_error():
         try:
             # Versuche Repository über App zu holen
             repo = ea_app.Repository
-            print("   ✓ Repository über EA.App erhalten")
+            print("   [OK] Repository über EA.App erhalten")
         except:
             # Alternative: Erstelle neues Repository
             print("   Erstelle neues Repository...")
             repo = win32com.client.Dispatch("EA.Repository")
-            print("   ✓ Repository direkt erstellt")
+            print("   [OK] Repository direkt erstellt")
         
         print("\n3. Öffne oder erstelle Test-Datei...")
         test_file = Path.home() / "EA_Workaround_Test.eapx"
@@ -57,10 +57,10 @@ def fix_ea_internal_error():
                 # Versuche CreateModel
                 success = repo.CreateModel(str(test_file), 0)  # 0 = .eapx
                 if success:
-                    print("   ✓ Datei erstellt")
+                    print("   [OK] Datei erstellt")
                     success = repo.OpenFile(str(test_file))
         except Exception as e:
-            print(f"   ⚠ OpenFile fehlgeschlagen: {e}")
+            print(f"   [WARNUNG] OpenFile fehlgeschlagen: {e}")
         
         # Methode 2: OpenFile2 (für Datenbanken/Connection Strings)
         if not success:
@@ -68,28 +68,28 @@ def fix_ea_internal_error():
                 print("   Versuche OpenFile2...")
                 success = repo.OpenFile2(str(test_file), "", "")
             except Exception as e:
-                print(f"   ⚠ OpenFile2 fehlgeschlagen: {e}")
+                print(f"   [WARNUNG] OpenFile2 fehlgeschlagen: {e}")
         
         # Methode 3: Über EA.Project
         if not success:
             try:
                 print("\n4. Alternative: Verwende EA.Project...")
                 ea_project = win32com.client.Dispatch("EA.Project")
-                print("   ✓ EA.Project erstellt")
+                print("   [OK] EA.Project erstellt")
                 
                 # Manche EA-Versionen erlauben Project-basierte Operationen
                 success = True
             except Exception as e:
-                print(f"   ⚠ EA.Project fehlgeschlagen: {e}")
+                print(f"   [WARNUNG] EA.Project fehlgeschlagen: {e}")
         
         if success:
-            print("\n✅ ERFOLG! EA funktioniert mit Workaround!")
+            print("\n[ERFOLG] EA funktioniert mit Workaround!")
             
             # Teste ob Models jetzt funktioniert
             try:
                 print("\n5. Teste Models-Zugriff...")
                 models = repo.Models
-                print(f"   ✓ Models.Count = {models.Count}")
+                print(f"   [OK] Models.Count = {models.Count}")
                 
                 # Versuche ein Model zu erstellen
                 if models.Count == 0:
@@ -98,29 +98,29 @@ def fix_ea_internal_error():
                     if model:
                         model.Update()
                         models.Refresh()
-                        print("   ✓ Model erstellt!")
+                        print("   [OK] Model erstellt!")
                         
             except Exception as e:
-                print(f"   ⚠ Models-Zugriff fehlgeschlagen: {e}")
+                print(f"   [WARNUNG] Models-Zugriff fehlgeschlagen: {e}")
                 print("   → Verwende Package-Funktionen ohne Models-Collection")
             
             # Schließe und aufräumen
             try:
                 repo.CloseFile()
-                print("\n✓ Repository geschlossen")
+                print("\n[OK] Repository geschlossen")
             except:
                 pass
                 
             return repo
         else:
-            print("\n❌ Konnte EA nicht initialisieren")
+            print("\n[FEHLER] Konnte EA nicht initialisieren")
             return None
             
     except ImportError:
-        print("❌ pywin32 nicht installiert")
+        print("[FEHLER] pywin32 nicht installiert")
         return None
     except Exception as e:
-        print(f"❌ Unerwarteter Fehler: {e}")
+        print(f"[FEHLER] Unerwarteter Fehler: {e}")
         return None
 
 def alternative_package_creation():
@@ -145,7 +145,7 @@ def alternative_package_creation():
             success = repo.OpenFile(env_path)
             
             if success:
-                print("✓ Projekt geöffnet")
+                print("[OK] Projekt geöffnet")
                 
                 # Alternative: GetPackageByGuid oder SQL Queries
                 print("\nAlternative Methoden:")
@@ -154,32 +154,32 @@ def alternative_package_creation():
                 try:
                     sql = "SELECT Package_ID, Name FROM t_package WHERE Parent_ID = 0"
                     packages = repo.SQLQuery(sql)
-                    print(f"✓ SQL Query funktioniert: {packages[:100]}...")
+                    print(f"[OK] SQL Query funktioniert: {packages[:100]}...")
                 except Exception as e:
-                    print(f"⚠ SQL Query nicht verfügbar: {e}")
+                    print(f"[WARNUNG] SQL Query nicht verfügbar: {e}")
                 
                 # 2. GetPackageByID
                 try:
                     # Package ID 1 ist oft das Root
                     pkg = repo.GetPackageByID(1)
                     if pkg:
-                        print(f"✓ GetPackageByID funktioniert: {pkg.Name}")
+                        print(f"[OK] GetPackageByID funktioniert: {pkg.Name}")
                 except Exception as e:
-                    print(f"⚠ GetPackageByID nicht verfügbar: {e}")
+                    print(f"[WARNUNG] GetPackageByID nicht verfügbar: {e}")
                 
                 # 3. Über TreeView
                 try:
                     tree = repo.GetTreeSelectedObject()
                     if tree:
-                        print(f"✓ TreeView-Zugriff funktioniert")
+                        print(f"[OK] TreeView-Zugriff funktioniert")
                 except Exception as e:
-                    print(f"⚠ TreeView nicht verfügbar: {e}")
+                    print(f"[WARNUNG] TreeView nicht verfügbar: {e}")
                     
                 repo.CloseFile()
-                print("\n✓ Alternative Methoden getestet")
+                print("\n[OK] Alternative Methoden getestet")
                 
     except Exception as e:
-        print(f"❌ Fehler: {e}")
+        print(f"[FEHLER] Fehler: {e}")
 
 def main():
     # Schritt 1: Workaround versuchen
@@ -187,7 +187,7 @@ def main():
     
     if repo:
         print("\n" + "=" * 60)
-        print("✅ EA funktioniert mit Workaround!")
+        print("[ERFOLG] EA funktioniert mit Workaround!")
         print("=" * 60)
         print("\nDu kannst jetzt verwenden:")
         print("1. EA.App statt direktem Repository")

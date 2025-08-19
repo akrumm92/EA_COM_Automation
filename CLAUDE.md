@@ -6,6 +6,37 @@
 **Testing:** Windows  
 **Wichtig:** Alle Änderungen müssen vor dem Commit auf Windows getestet werden!
 
+## ⚠️ WICHTIG: EA COM "Internal Application Error" Fix
+
+### Problem
+EA COM API wirft "Internal application error" bei direktem Zugriff auf Repository-Methoden.
+
+### ✅ LÖSUNG
+```python
+import win32com.client
+
+# FALSCH - führt zu Internal Error:
+ea_app = win32com.client.GetActiveObject("EA.App")
+repo = ea_app.Repository
+
+# RICHTIG - Repository initialisieren:
+repo = win32com.client.Dispatch("EA.Repository")
+success = repo.OpenFile(r"C:\path\to\project.qea")
+# Jetzt funktionieren alle Repository-Methoden!
+```
+
+### Funktionierende Methode für Package-Erstellung:
+1. Neues Repository-Objekt mit `Dispatch("EA.Repository")` erstellen
+2. Projekt-Datei mit `OpenFile()` öffnen - das initialisiert das Repository
+3. Dann funktionieren Models, Packages, Elements etc. normal
+
+### Was funktioniert:
+- ✅ Package-Erstellung über Models.AddNew()
+- ✅ Element-Erstellung (Klassen, Interfaces)
+- ✅ Diagramm-Erstellung
+- ✅ SQL-Queries
+- ✅ GetPackageByGuid nach OpenFile()
+
 ## Cross-Platform Kompatibilität
 
 ### Pfad-Handling
