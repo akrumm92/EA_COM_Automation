@@ -1,0 +1,74 @@
+✅ EA-Verbindung hergestellt!
+============================================================
+
+Teste EA-Funktionen...
+   ✅ OpenFile Methode vorhanden
+   ❌ Fehler: (-2147352567, 'Ausnahmefehler aufgetreten.', (61704, 'Enterprise Architect', 'Internal application error.', None, 0, 0), None)
+
+⚠️  EA-Verbindung da, aber eingeschränkte Funktionalität
+
+
+
+PS C:\Users\E017093\gitRepos\EA_COM_Automation> & C:/Users/E017093/AppData/Local/Programs/Python/Python313/python.exe c:/Users/E017093/gitRepos/EA_COM_Automation/scripts/diagnose_ea.py
+============================================================
+EA COM Diagnose-Tool
+============================================================
+✓ Windows erkannt: 10.0.26100
+✓ pywin32 ist installiert
+
+Teste ProgID: EA.Repository
+  ✓ EA.Repository erfolgreich erstellt
+    - Typ: <class 'win32com.client.CDispatch'>
+    - OpenFile Methode vorhanden
+  ❌ EA.Repository fehlgeschlagen: (-2147352567, 'Ausnahmefehler aufgetreten.', (61704, 'Enterprise Architect', 'Internal application error.', None, 0, 0), None)
+
+Teste ProgID: EA.App
+  ✓ EA.App erfolgreich erstellt
+
+Teste ProgID: EA.Project
+  ✓ EA.Project erfolgreich erstellt
+
+Suche EA Installation...
+  ✓ EA-Verzeichnis gefunden: C:\Program Files\Sparx Systems\EA
+    ✓ EA.exe gefunden: C:\Program Files\Sparx Systems\EA\EA.exe
+
+Versuche EA COM-Server zu registrieren...
+  EA.exe: C:\Program Files\Sparx Systems\EA\EA.exe
+  Führe aus: "C:\Program Files\Sparx Systems\EA\EA.exe" /register
+  ✓ Registrierung erfolgreich
+
+Teste ProgID: EA.Repository
+  ✓ EA.Repository erfolgreich erstellt
+    - Typ: <class 'win32com.client.CDispatch'>
+    - OpenFile Methode vorhanden
+  ❌ EA.Repository fehlgeschlagen: (-2147352567, 'Ausnahmefehler aufgetreten.', (61704, 'Enterprise Architect', 'Internal application error.', None, 0, 0), None)
+
+Teste ProgID: EA.App
+  ✓ EA.App erfolgreich erstellt
+
+Teste ProgID: EA.Project
+  ✓ EA.Project erfolgreich erstellt
+
+Teste Repository-Erstellung...
+  ✓ Repository-Objekt erstellt
+    ✓ OpenFile verfügbar
+    ✓ OpenFile2 verfügbar
+    ✓ CreateModel verfügbar
+  ❌ Repository konnte nicht erstellt werden: (-2147352567, 'Ausnahmefehler aufgetreten.', (61704, 'Enterprise Architect', 'Internal application error.', None, 0, 0), None)
+
+============================================================
+ZUSAMMENFASSUNG
+============================================================
+❌ EA COM-Verbindung funktioniert NICHT!
+
+Lösungsvorschläge:
+1. Stelle sicher dass EA installiert ist
+2. Öffne CMD als Administrator
+3. Führe aus: "C:\Program Files\Sparx Systems\EA\EA.exe" /register
+4. Starte dieses Skript erneut
+
+Alternativ:
+- Deinstalliere und reinstalliere EA
+- Stelle sicher dass die richtige EA-Version installiert ist
+============================================================
+PS C:\Users\E017093\gitRepos\EA_COM_Automation> 

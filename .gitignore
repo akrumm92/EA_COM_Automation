@@ -46,7 +46,6 @@ logs/
 *.log
 
 # Test Reports
-test_reports/
 htmlcov/
 .coverage
 .pytest_cache/
