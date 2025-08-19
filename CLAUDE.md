@@ -2,9 +2,9 @@
 
 ## Entwicklungsumgebung
 
-**Entwicklung:** macOS  
+**Entwicklung:** Windows  
 **Testing:** Windows  
-**Wichtig:** Alle Änderungen müssen vor dem Commit auf Windows getestet werden!
+**Wichtig:** Entwicklung erfolgt direkt auf Windows, da EA COM nur auf Windows funktioniert!
 
 ## ⚠️ WICHTIG: EA COM "Internal Application Error" Fix
 
@@ -37,7 +37,23 @@ success = repo.OpenFile(r"C:\path\to\project.qea")
 - ✅ SQL-Queries
 - ✅ GetPackageByGuid nach OpenFile()
 
-## Cross-Platform Kompatibilität
+## 📚 EA Dokumentation
+
+**WICHTIG:** Alle EA-spezifischen Erkenntnisse und Lessons Learned werden in [`docs/EA_HOW_TO_USE.md`](docs/EA_HOW_TO_USE.md) dokumentiert!
+
+Diese Datei enthält:
+- Vollständige Code-Beispiele
+- Troubleshooting-Guide
+- Best Practices für EA COM
+- Workarounds für bekannte Probleme
+
+## Windows-Entwicklung
+
+### Systemanforderungen
+- Windows 10/11
+- Enterprise Architect installiert
+- Python 3.8+ 
+- pywin32 (`pip install pywin32`)
 
 ### Pfad-Handling
 - **IMMER** `os.path.join()` oder `pathlib.Path` für Dateipfade verwenden

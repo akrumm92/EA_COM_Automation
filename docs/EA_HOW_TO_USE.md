@@ -1,4 +1,6 @@
-# EA COM Automation - How To Use
+# EA COM Automation - How To Use & Lessons Learned
+
+📝 **Diese Datei dokumentiert alle Erkenntnisse und Lösungen für die EA COM Automation**
 
 ## Voraussetzungen
 
@@ -183,6 +185,31 @@ if __name__ == "__main__":
 - Project Browser aktualisieren (F5)
 - `Refresh()` nach Updates aufrufen
 - Repository neu öffnen
+
+## Lessons Learned
+
+### 1. Internal Application Error - GELÖST ✅
+**Problem:** `GetActiveObject("EA.App")` führt zu "Internal application error"  
+**Lösung:** Repository mit `Dispatch()` und `OpenFile()` initialisieren
+
+### 2. Unicode in Windows Console
+**Problem:** Unicode-Zeichen (✅, ❌) führen zu Encoding-Fehlern  
+**Lösung:** ASCII-Alternativen verwenden ([OK], [FEHLER])
+
+### 3. Repository.Execute() nicht verfügbar
+**Problem:** SQL INSERT/UPDATE via Execute() funktioniert nicht  
+**Lösung:** Nur SELECT via SQLQuery(), Änderungen über COM API
+
+### 4. Models-Collection Zugriff
+**Problem:** Models wirft Fehler ohne OpenFile()  
+**Lösung:** IMMER erst OpenFile(), dann Models zugreifen
+
+### 5. SaveFile() Error
+**Problem:** SaveFile() wirft manchmal Fehler  
+**Lösung:** .qea Dateien speichern automatisch, Fehler ignorieren
+
+## Zukünftige Erkenntnisse
+*(Hier werden neue Lessons Learned ergänzt)*
 
 ## Weitere Ressourcen
 
