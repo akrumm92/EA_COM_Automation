@@ -28,18 +28,57 @@ class TestEAConnection:
         try:
             import win32com.client
             
-            # Versuche EA zu starten
-            ea_app = win32com.client.Dispatch("EA.Repository")
+            # Versuche EA zu starten - mit besserem Error Handling
+            try:
+                ea_app = win32com.client.Dispatch("EA.Repository")
+            except Exception as dispatch_error:
+                # Gib detaillierte Fehlerinfo
+                logger.warning(f"EA.Repository Dispatch fehlgeschlagen: {dispatch_error}")
+                logger.info("Tipp: Führe 'python scripts/diagnose_ea.py' aus für Diagnose")
+                pytest.skip(f"EA COM nicht verfügbar: {dispatch_error}")
             
             # Prüfe ob EA-Objekt erstellt wurde
-            assert ea_app is not None
+            assert ea_app is not None, "EA Repository Objekt ist None"
             
             # Prüfe ob wichtige Eigenschaften vorhanden sind
-            assert hasattr(ea_app, 'OpenFile')
-            assert hasattr(ea_app, 'Models')
-            assert hasattr(ea_app, 'CloseFile')
+            required_methods = ['OpenFile', 'Models', 'CloseFile', 'GetPackageByGuid']
+            missing_methods = []
+            
+            for method in required_methods:
+                if not hasattr(ea_app, method):
+                    missing_methods.append(method)
+            
+            if missing_methods:
+                logger.error(f"Fehlende EA-Methoden: {missing_methods}")
+                pytest.fail(f"EA-Objekt unvollständig. Fehlende Methoden: {missing_methods}")
             
             logger.info("✅ EA COM-Verbindung erfolgreich")
+            logger.info(f"   EA-Objekt Typ: {type(ea_app)}")
+            
+            # Optional: Versuche Test-Datei zu erstellen/öffnen
+            test_file = Path.home() / "EA_pytest_test.eapx"
+            try:
+                if not test_file.exists():
+                    # Versuche Test-Datei zu erstellen
+                    success = ea_app.CreateModel(str(test_file), 0)  # 0 = .eapx
+                    if success:
+                        logger.info(f"   Test-Datei erstellt: {test_file}")
+                
+                # Versuche zu öffnen
+                success = ea_app.OpenFile(str(test_file))
+                if success:
+                    logger.info(f"   Test-Datei geöffnet: {test_file}")
+                    ea_app.CloseFile()
+                    logger.info("   Test-Datei geschlossen")
+                    
+                    # Lösche Test-Datei
+                    try:
+                        test_file.unlink()
+                        logger.info("   Test-Datei gelöscht")
+                    except:
+                        pass
+            except Exception as file_error:
+                logger.warning(f"   Datei-Test fehlgeschlagen: {file_error}")
             
             # Aufräumen
             try:
@@ -49,7 +88,10 @@ class TestEAConnection:
                 
         except ImportError:
             pytest.skip("pywin32 nicht installiert")
+        except AssertionError:
+            raise  # AssertionErrors durchreichen
         except Exception as e:
+            logger.error(f"Unerwarteter Fehler: {e}")
             pytest.skip(f"EA nicht verfügbar: {e}")
     
     def test_mock_ea_repository(self):
