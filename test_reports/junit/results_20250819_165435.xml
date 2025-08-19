@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="2" skipped="1" tests="40" time="4.134" timestamp="2025-08-19T16:54:36.896828" hostname="N2202942"><testcase classname="tests.manual_connection_test" name="test_ea_connection" time="0.821" /><testcase classname="tests.manual_package_test" name="test_package_functions" time="0.003" /><testcase classname="tests.test_cli_mock" name="test_cli_arguments" time="0.008" /><testcase classname="tests.test_cli_mock" name="test_cli_with_mock" time="1.215" /><testcase classname="tests.test_ea_connection.TestEAConnection" name="test_real_ea_connection" time="0.906"><skipped type="pytest.skip" message="EA nicht verfügbar: (-2147352567, 'Ausnahmefehler aufgetreten.', (61704, 'Enterprise Architect', 'Internal application error.', None, 0, 0), None)">C:\Users\E017093\gitRepos\EA_COM_Automation\tests\test_ea_connection.py:95: EA nicht verfügbar: (-2147352567, 'Ausnahmefehler aufgetreten.', (61704, 'Enterprise Architect', 'Internal application error.', None, 0, 0), None)</skipped></testcase><testcase classname="tests.test_ea_connection.TestEAConnection" name="test_mock_ea_repository" time="0.003" /><testcase classname="tests.test_ea_connection.TestEAConnection" name="test_create_package_with_mock" time="0.002" /><testcase classname="tests.test_ea_connection.TestEAConnection" name="test_ensure_path_with_mock" time="0.005" /><testcase classname="tests.test_ea_connection.TestEAConnection" name="test_ensure_path_idempotence" time="0.003" /><testcase classname="tests.test_ea_connection.TestEAConnection" name="test_error_handling" time="0.002" /><testcase classname="tests.integration.test_full_workflow.TestFullWorkflow" name="test_complete_project_setup" time="0.012" /><testcase classname="tests.unit.test_elements.TestCreateElement" name="test_create_element_error_handling" time="0.002" /><testcase classname="tests.unit.test_elements.TestCreateElement" name="test_create_element_idempotent_existing_element" time="0.001" /><testcase classname="tests.unit.test_elements.TestCreateElement" name="test_create_element_idempotent_mdg_existing" time="0.002"><failure message="AssertionError: Expected 'AddNew' to not have been called. Called 1 times.&#10;Calls: [call('Pumpe', 'Class'), call().Update()].&#10;&#10;pytest introspection follows:&#10;&#10;Args:&#10;assert ('Pumpe', 'Class') == ()&#10;  Left contains 2 more items, first extra item: 'Pumpe'&#10;  Full diff:&#10;  - ()&#10;  + ('Pumpe', 'Class')">..\..\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py:938: in assert_not_called
+    raise AssertionError(msg)
+E   AssertionError: Expected 'AddNew' to not have been called. Called 1 times.
+E   Calls: [call('Pumpe', 'Class'), call().Update()].
+
+During handling of the above exception, another exception occurred:
+tests\unit\test_elements.py:133: in test_create_element_idempotent_mdg_existing
+    self.mock_elements.AddNew.assert_not_called()
+E   AssertionError: Expected 'AddNew' to not have been called. Called 1 times.
+E   Calls: [call('Pumpe', 'Class'), call().Update()].
+E   
+E   pytest introspection follows:
+E   
+E   Args:
+E   assert ('Pumpe', 'Class') == ()
+E     Left contains 2 more items, first extra item: 'Pumpe'
+E     Full diff:
+E     - ()
+E     + ('Pumpe', 'Class')</failure></testcase><testcase classname="tests.unit.test_elements.TestCreateElement" name="test_create_element_mdg_type" time="0.003"><failure message="AssertionError: expected call not found.&#10;Expected: AddNew('Motor', 'Block')&#10;  Actual: AddNew('Motor', 'Class')&#10;&#10;pytest introspection follows:&#10;&#10;Args:&#10;assert ('Motor', 'Class') == ('Motor', 'Block')&#10;  At index 1 diff: 'Class' != 'Block'&#10;  Full diff:&#10;  - ('Motor', 'Block')&#10;  ?            ^ ^^^&#10;  + ('Motor', 'Class')&#10;  ?            ^ ^^^">..\..\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py:977: in assert_called_with
+    raise AssertionError(_error_message()) from cause
+E   AssertionError: expected call not found.
+E   Expected: AddNew('Motor', 'Block')
+E     Actual: AddNew('Motor', 'Class')
+
+During handling of the above exception, another exception occurred:
+..\..\AppData\Local\Programs\Python\Python313\Lib\unittest\mock.py:989: in assert_called_once_with
+    return self.assert_called_with(*args, **kwargs)
+E   AssertionError: expected call not found.
+E   Expected: AddNew('Motor', 'Block')
+E     Actual: AddNew('Motor', 'Class')
+E   
+E   pytest introspection follows:
+E   
+E   Args:
+E   assert ('Motor', 'Class') == ('Motor', 'Block')
+E     At index 1 diff: 'Class' != 'Block'
+E     Full diff:
+E     - ('Motor', 'Block')
+E     ?            ^ ^^^
+E     + ('Motor', 'Class')
+E     ?            ^ ^^^
+
+During handling of the above exception, another exception occurred:
+tests\unit\test_elements.py:81: in test_create_element_mdg_type
+    self.mock_elements.AddNew.assert_called_once_with("Motor", "Block")
+E   AssertionError: expected call not found.
+E   Expected: AddNew('Motor', 'Block')
+E     Actual: AddNew('Motor', 'Class')
+E   
+E   pytest introspection follows:
+E   
+E   Args:
+E   assert ('Motor', 'Class') == ('Motor', 'Block')
+E     At index 1 diff: 'Class' != 'Block'
+E     Full diff:
+E     - ('Motor', 'Block')
+E     ?            ^ ^^^
+E     + ('Motor', 'Class')
+E     ?            ^ ^^^</failure></testcase><testcase classname="tests.unit.test_elements.TestCreateElement" name="test_create_element_standard_uml_type" time="0.002" /><testcase classname="tests.unit.test_elements.TestAddAttribute" name="test_add_attribute_error_handling" time="0.001" /><testcase classname="tests.unit.test_elements.TestAddAttribute" name="test_add_attribute_idempotent" time="0.001" /><testcase classname="tests.unit.test_elements.TestAddAttribute" name="test_add_new_attribute" time="0.001" /><testcase classname="tests.unit.test_elements.TestAddOperation" name="test_add_new_operation" time="0.001" /><testcase classname="tests.unit.test_elements.TestAddOperation" name="test_add_operation_default_void" time="0.001" /><testcase classname="tests.unit.test_elements.TestAddOperation" name="test_add_operation_idempotent" time="0.002" /><testcase classname="tests.unit.test_elements.TestElementClass" name="test_element_to_dict" time="0.001" /><testcase classname="tests.unit.test_elements.TestElementClass" name="test_element_wrapper_properties" time="0.001" /><testcase classname="tests.unit.test_json_io.TestLoadModelSpec" name="test_load_spec_file_not_found" time="0.002" /><testcase classname="tests.unit.test_json_io.TestLoadModelSpec" name="test_load_spec_invalid_connector_type" time="0.009" /><testcase classname="tests.unit.test_json_io.TestLoadModelSpec" name="test_load_spec_invalid_json" time="0.005" /><testcase classname="tests.unit.test_json_io.TestLoadModelSpec" name="test_load_spec_missing_required_field" time="0.011" /><testcase classname="tests.unit.test_json_io.TestLoadModelSpec" name="test_load_spec_with_attributes_and_operations" time="0.015" /><testcase classname="tests.unit.test_json_io.TestLoadModelSpec" name="test_load_spec_with_mdg_types" time="0.010" /><testcase classname="tests.unit.test_json_io.TestLoadModelSpec" name="test_load_valid_spec" time="0.009" /><testcase classname="tests.unit.test_json_io.TestModelSpecLogicValidation" name="test_validate_connector_undefined_client" time="0.001" /><testcase classname="tests.unit.test_json_io.TestModelSpecLogicValidation" name="test_validate_connector_undefined_supplier" time="0.001" /><testcase classname="tests.unit.test_json_io.TestModelSpecLogicValidation" name="test_validate_duplicate_elements_in_package" time="0.001" /><testcase classname="tests.unit.test_json_io.TestModelSpecLogicValidation" name="test_validate_element_undefined_package_warning" time="0.002" /><testcase classname="tests.unit.test_json_io.TestValidateJsonAgainstSchema" name="test_validate_complete_spec" time="0.003" /><testcase classname="tests.unit.test_json_io.TestValidateJsonAgainstSchema" name="test_validate_empty_spec" time="0.001" /><testcase classname="tests.unit.test_json_io.TestValidateJsonAgainstSchema" name="test_validate_invalid_json_additional_property" time="0.001" /><testcase classname="tests.unit.test_json_io.TestValidateJsonAgainstSchema" name="test_validate_invalid_json_wrong_type" time="0.002" /><testcase classname="tests.unit.test_json_io.TestValidateJsonAgainstSchema" name="test_validate_valid_json" time="0.002" /></testsuite></testsuites>

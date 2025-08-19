@@ -1,0 +1,222 @@
+{
+  "model": "CoffeeMachine",
+  "packages": [
+    "01_Requirements",
+    "02_Architecture",
+    "03_Design",
+    "04_Implementation"
+  ],
+  "elements": [
+    {
+      "package": "02_Architecture",
+      "name": "CoffeeMachine",
+      "type": "SysML1.4::Block",
+      "notes": "Main coffee machine system block",
+      "attributes": [
+        {"name": "powerState", "type": "Boolean"},
+        {"name": "waterLevel", "type": "Double"},
+        {"name": "coffeeBeansLevel", "type": "Double"}
+      ],
+      "operations": [
+        {"name": "powerOn", "returnType": "void"},
+        {"name": "powerOff", "returnType": "void"},
+        {"name": "brewCoffee", "returnType": "Boolean"}
+      ]
+    },
+    {
+      "package": "02_Architecture",
+      "name": "Boiler",
+      "type": "SysML1.4::Block",
+      "notes": "Water heating system",
+      "attributes": [
+        {"name": "temperature", "type": "Double"},
+        {"name": "capacity", "type": "Double"},
+        {"name": "isHeating", "type": "Boolean"}
+      ],
+      "operations": [
+        {"name": "heatWater", "returnType": "void"},
+        {"name": "getTemperature", "returnType": "Double"},
+        {"name": "maintainTemperature", "returnType": "void"}
+      ]
+    },
+    {
+      "package": "02_Architecture",
+      "name": "Pump",
+      "type": "SysML1.4::Block",
+      "notes": "Water pump for coffee extraction",
+      "attributes": [
+        {"name": "flowRate", "type": "Double"},
+        {"name": "pressure", "type": "Double"},
+        {"name": "isRunning", "type": "Boolean"}
+      ],
+      "operations": [
+        {"name": "start", "returnType": "void"},
+        {"name": "stop", "returnType": "void"},
+        {"name": "setPressure", "returnType": "void"}
+      ]
+    },
+    {
+      "package": "02_Architecture",
+      "name": "Grinder",
+      "type": "SysML1.4::Block",
+      "notes": "Coffee bean grinder",
+      "attributes": [
+        {"name": "grindLevel", "type": "Integer"},
+        {"name": "isGrinding", "type": "Boolean"}
+      ],
+      "operations": [
+        {"name": "grindBeans", "returnType": "void"},
+        {"name": "setGrindLevel", "returnType": "void"}
+      ]
+    },
+    {
+      "package": "02_Architecture",
+      "name": "WaterTank",
+      "type": "SysML1.4::Block",
+      "notes": "Water storage tank",
+      "attributes": [
+        {"name": "capacity", "type": "Double"},
+        {"name": "currentLevel", "type": "Double"}
+      ],
+      "operations": [
+        {"name": "fill", "returnType": "void"},
+        {"name": "checkLevel", "returnType": "Double"}
+      ]
+    },
+    {
+      "package": "02_Architecture",
+      "name": "ControlUnit",
+      "type": "Class",
+      "stereotype": "controller",
+      "notes": "Main control unit for coffee machine",
+      "attributes": [
+        {"name": "currentState", "type": "String"},
+        {"name": "selectedProgram", "type": "Integer"}
+      ],
+      "operations": [
+        {"name": "executeProgram", "returnType": "void"},
+        {"name": "checkSensors", "returnType": "Boolean"},
+        {"name": "displayStatus", "returnType": "void"}
+      ]
+    },
+    {
+      "package": "03_Design",
+      "name": "UserInterface",
+      "type": "Class",
+      "stereotype": "boundary",
+      "notes": "User interface for coffee machine",
+      "attributes": [
+        {"name": "displayText", "type": "String"},
+        {"name": "selectedOption", "type": "Integer"}
+      ],
+      "operations": [
+        {"name": "showMenu", "returnType": "void"},
+        {"name": "getUserInput", "returnType": "Integer"},
+        {"name": "displayMessage", "returnType": "void"}
+      ]
+    },
+    {
+      "package": "03_Design",
+      "name": "SensorSystem",
+      "type": "Component",
+      "notes": "Sensor management component",
+      "attributes": [
+        {"name": "sensorCount", "type": "Integer"}
+      ],
+      "operations": [
+        {"name": "readSensor", "returnType": "Double"},
+        {"name": "calibrate", "returnType": "void"}
+      ]
+    }
+  ],
+  "connectors": [
+    {
+      "type": "Association",
+      "client": "CoffeeMachine",
+      "supplier": "Boiler",
+      "name": "has",
+      "notes": "Coffee machine contains a boiler"
+    },
+    {
+      "type": "Association",
+      "client": "CoffeeMachine",
+      "supplier": "Pump",
+      "name": "has",
+      "notes": "Coffee machine contains a pump"
+    },
+    {
+      "type": "Association",
+      "client": "CoffeeMachine",
+      "supplier": "Grinder",
+      "name": "has",
+      "notes": "Coffee machine contains a grinder"
+    },
+    {
+      "type": "Association",
+      "client": "CoffeeMachine",
+      "supplier": "WaterTank",
+      "name": "has",
+      "notes": "Coffee machine contains a water tank"
+    },
+    {
+      "type": "Dependency",
+      "client": "CoffeeMachine",
+      "supplier": "ControlUnit",
+      "name": "uses",
+      "notes": "Coffee machine is controlled by control unit"
+    },
+    {
+      "type": "Association",
+      "client": "ControlUnit",
+      "supplier": "UserInterface",
+      "name": "manages",
+      "notes": "Control unit manages user interface"
+    },
+    {
+      "type": "Dependency",
+      "client": "ControlUnit",
+      "supplier": "SensorSystem",
+      "name": "reads",
+      "notes": "Control unit reads sensor data"
+    },
+    {
+      "type": "InformationFlow",
+      "client": "Boiler",
+      "supplier": "SensorSystem",
+      "name": "temperature_data",
+      "notes": "Temperature information flow"
+    },
+    {
+      "type": "InformationFlow",
+      "client": "WaterTank",
+      "supplier": "SensorSystem",
+      "name": "level_data",
+      "notes": "Water level information flow"
+    }
+  ],
+  "diagrams": [
+    {
+      "package": "02_Architecture",
+      "name": "System Architecture Overview",
+      "type": "Component",
+      "elements": [
+        "CoffeeMachine",
+        "Boiler",
+        "Pump",
+        "Grinder",
+        "WaterTank",
+        "ControlUnit"
+      ]
+    },
+    {
+      "package": "03_Design",
+      "name": "Control System Design",
+      "type": "Class",
+      "elements": [
+        "ControlUnit",
+        "UserInterface",
+        "SensorSystem"
+      ]
+    }
+  ]
+}

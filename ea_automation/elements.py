@@ -134,3 +134,182 @@ def get_elements_from_package(package: Any) -> List[Element]:
     for i in range(ea_package.Elements.Count):
         elements.append(Element(ea_package.Elements.GetAt(i)))
     return elements
+
+
+def create_element(
+    package: Any, 
+    name: str, 
+    uml_or_mdg_type: str, 
+    stereotype: Optional[str] = None,
+    notes: Optional[str] = None
+) -> Any:
+    """
+    Erstellt ein Element im Package (idempotent).
+    Unterstützt Standard UML-Typen und MDG-Typen wie 'SysML1.4::Block'.
+    
+    Args:
+        package: EA Package Objekt
+        name: Name des Elements
+        uml_or_mdg_type: UML-Typ (z.B. 'Class') oder MDG-Typ (z.B. 'SysML1.4::Block')
+        stereotype: Optionales Stereotype
+        notes: Optionale Notizen
+    
+    Returns:
+        EA Element Objekt (neu erstellt oder existierend)
+    """
+    try:
+        # Hole Package-Objekt
+        ea_package = package.ea_package if hasattr(package, 'ea_package') else package
+        elements_collection = ea_package.Elements
+        
+        # Prüfe ob Element bereits existiert (Idempotenz)
+        logger.debug(f"Suche existierendes Element: {name} (Typ: {uml_or_mdg_type})")
+        for i in range(elements_collection.Count):
+            elem = elements_collection.GetAt(i)
+            # Vergleiche Name und Typ/Stereotype
+            if elem.Name == name:
+                # Prüfe ob es der richtige Typ ist
+                if '::' in uml_or_mdg_type:
+                    # MDG-Typ: Prüfe Stereotype
+                    expected_stereotype = uml_or_mdg_type.split('::')[-1].lower()
+                    if elem.Stereotype.lower() == expected_stereotype or elem.Stereotype.lower() == stereotype.lower() if stereotype else False:
+                        logger.info(f"Element existiert bereits: {name} (ID: {elem.ElementID})")
+                        # Update Notes wenn angegeben
+                        if notes and elem.Notes != notes:
+                            elem.Notes = notes
+                            elem.Update()
+                            logger.debug(f"Notes aktualisiert für: {name}")
+                        return elem
+                else:
+                    # Standard UML-Typ
+                    if elem.Type == uml_or_mdg_type:
+                        logger.info(f"Element existiert bereits: {name} (ID: {elem.ElementID})")
+                        # Update Notes wenn angegeben
+                        if notes and elem.Notes != notes:
+                            elem.Notes = notes
+                            elem.Update()
+                            logger.debug(f"Notes aktualisiert für: {name}")
+                        return elem
+        
+        # Element existiert nicht - neu erstellen
+        logger.info(f"Erstelle neues Element: {name} (Typ: {uml_or_mdg_type})")
+        
+        # Unterscheide zwischen Standard UML und MDG-Typen
+        if '::' in uml_or_mdg_type:
+            # MDG-Typ (z.B. 'SysML1.4::Block')
+            mdg_parts = uml_or_mdg_type.split('::')
+            base_type = mdg_parts[-1]  # z.B. 'Block'
+            mdg_tech = mdg_parts[0]     # z.B. 'SysML1.4'
+            
+            # Für SysML Blocks verwende Class als Basis-Typ mit block Stereotype
+            if base_type.lower() == "block":
+                new_element = elements_collection.AddNew(name, "Class")
+                new_element.Stereotype = "block"
+            else:
+                # Erstelle Element mit Basis-Typ
+                new_element = elements_collection.AddNew(name, base_type)
+                new_element.Stereotype = stereotype if stereotype else base_type
+            
+            # Setze MetaType für MDG-Erkennung
+            new_element.MetaType = uml_or_mdg_type
+            
+            logger.debug(f"MDG-Element erstellt: {mdg_tech}::{base_type}")
+        else:
+            # Standard UML-Typ
+            new_element = elements_collection.AddNew(name, uml_or_mdg_type)
+            if stereotype:
+                new_element.Stereotype = stereotype
+        
+        # Setze Notes wenn angegeben
+        if notes:
+            new_element.Notes = notes
+        
+        # Update und Refresh
+        new_element.Update()
+        elements_collection.Refresh()
+        
+        logger.info(f"Element erfolgreich erstellt: {name} (ID: {new_element.ElementID}, GUID: {new_element.ElementGUID})")
+        return new_element
+        
+    except Exception as e:
+        error_msg = f"Fehler beim Erstellen/Finden des Elements '{name}': {str(e)}"
+        logger.error(error_msg)
+        raise EAError(error_msg)
+
+
+def add_attribute(element: Any, name: str, type_: str = "") -> Any:
+    """
+    Fügt ein Attribut zu einem Element hinzu.
+    
+    Args:
+        element: EA Element Objekt
+        name: Name des Attributs
+        type_: Datentyp des Attributs (default: "")
+    
+    Returns:
+        EA Attribute Objekt
+    """
+    try:
+        # Prüfe ob Attribut bereits existiert
+        attributes = element.Attributes
+        for i in range(attributes.Count):
+            attr = attributes.GetAt(i)
+            if attr.Name == name:
+                logger.info(f"Attribut existiert bereits: {name}")
+                if type_ and attr.Type != type_:
+                    attr.Type = type_
+                    attr.Update()
+                    logger.debug(f"Attribut-Typ aktualisiert: {name} -> {type_}")
+                return attr
+        
+        # Erstelle neues Attribut
+        new_attr = attributes.AddNew(name, type_)
+        new_attr.Update()
+        attributes.Refresh()
+        
+        logger.info(f"Attribut erstellt: {name} (Typ: {type_}) für Element {element.Name}")
+        return new_attr
+        
+    except Exception as e:
+        error_msg = f"Fehler beim Hinzufügen des Attributs '{name}': {str(e)}"
+        logger.error(error_msg)
+        raise EAError(error_msg)
+
+
+def add_operation(element: Any, name: str, return_type: str = "void") -> Any:
+    """
+    Fügt eine Operation/Methode zu einem Element hinzu.
+    
+    Args:
+        element: EA Element Objekt
+        name: Name der Operation
+        return_type: Rückgabetyp (default: "void")
+    
+    Returns:
+        EA Method Objekt
+    """
+    try:
+        # Prüfe ob Operation bereits existiert
+        methods = element.Methods
+        for i in range(methods.Count):
+            method = methods.GetAt(i)
+            if method.Name == name:
+                logger.info(f"Operation existiert bereits: {name}")
+                if method.ReturnType != return_type:
+                    method.ReturnType = return_type
+                    method.Update()
+                    logger.debug(f"Rückgabetyp aktualisiert: {name} -> {return_type}")
+                return method
+        
+        # Erstelle neue Operation
+        new_method = methods.AddNew(name, return_type)
+        new_method.Update()
+        methods.Refresh()
+        
+        logger.info(f"Operation erstellt: {name} (Return: {return_type}) für Element {element.Name}")
+        return new_method
+        
+    except Exception as e:
+        error_msg = f"Fehler beim Hinzufügen der Operation '{name}': {str(e)}"
+        logger.error(error_msg)
+        raise EAError(error_msg)
